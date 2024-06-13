@@ -16,7 +16,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Add observability code here
-
+builder.Services.AddObservability("Store", builder.Configuration);
 
 var app = builder.Build();
 
@@ -30,6 +30,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapObservability();
 app.UseStaticFiles();
 app.UseAntiforgery();
 

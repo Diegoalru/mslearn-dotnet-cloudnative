@@ -15,6 +15,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 app.MapProductEndpoints();
 
+app.MapObservability();
+
 app.UseStaticFiles();
 
 app.CreateDbIfNotExists();
