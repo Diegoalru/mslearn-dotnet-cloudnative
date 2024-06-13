@@ -57,8 +57,10 @@ else
 
   private async Task OpenDialog(Product selectedProduct)
   {
-    selectedProductID = selectedProduct.Id;
-    visible=true;
+    await Task.Run(() => {
+      selectedProductID = selectedProduct.Id;
+      visible = true;
+    });
     StateHasChanged();
   }
 

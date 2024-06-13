@@ -57,7 +57,7 @@ public async Task<bool> UpdateStock(int productId, int stockAmount)
 
         return false;
     }
-    catch (Exception ex)
+    catch (Exception)
     {
         // handle error  
         return false;
