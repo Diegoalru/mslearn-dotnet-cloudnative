@@ -1,31 +1,42 @@
 services: 
   frontend:
+    container_name: frontend
     image: store:latest
     build:
       context: .
       dockerfile: ./eShopLite/Store/Dockerfile
     environment: 
+      - ImagePrefix=http://localhost:32001/images
       - ProductEndpoint=http://backend:8080
       - ZIPKIN_URL=http://zipkin:9411
+    env_file:
+      - .env
     ports:
       - "32000:8080"
     depends_on: 
       - backend
       - prometheus
       - zipkin
+
   backend:
+    container_name: backend
     image: products:latest
     build: 
       context: .
       dockerfile: ./eShopLite/Products/Dockerfile
     environment: 
       - ZIPKIN_URL=http://zipkin:9411
+    env_file:
+      - .env
     ports: 
       - "32001:8080"
     depends_on: 
       - prometheus
 
-  # Services for monitoring
+  #############################################
+  ######## Services for monitoring. ###########
+  #############################################
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -36,6 +47,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./prometheus:/etc/prometheus
+
   grafana:
     image: grafana/grafana
     container_name: grafana
@@ -47,6 +59,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
       - ./grafana/datasource:/etc/grafana/provisioning/datasources
+
   zipkin:
     image: openzipkin/zipkin
     ports:
