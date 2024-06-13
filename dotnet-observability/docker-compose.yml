@@ -1,19 +1,31 @@
 services: 
   frontend:
     image: store:latest
+    build:
+      context: .
+      dockerfile: ./eShopLite/Store/Dockerfile
     environment: 
       - ProductEndpoint=http://backend:8080
+      - ZIPKIN_URL=http://zipkin:9411
     ports:
       - "32000:8080"
     depends_on: 
       - backend
+      - prometheus
+      - zipkin
   backend:
     image: products:latest
+    build: 
+      context: .
+      dockerfile: ./eShopLite/Products/Dockerfile
+    environment: 
+      - ZIPKIN_URL=http://zipkin:9411
     ports: 
       - "32001:8080"
+    depends_on: 
+      - prometheus
 
-  # Prometheus and Grafana services.
-
+  # Services for monitoring
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -35,3 +47,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=grafana
     volumes:
       - ./grafana/datasource:/etc/grafana/provisioning/datasources
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
