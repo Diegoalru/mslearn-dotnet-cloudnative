@@ -1,6 +1,7 @@
 ﻿using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +16,11 @@ public static class DiagnosticServiceCollectionExtensions
 
     // add the OpenTelemetry services
     var otelBuilder = services.AddOpenTelemetry();
+
+    if (configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"] != null)
+    {
+      otelBuilder.UseAzureMonitor();
+    }
 
     otelBuilder
         // add the metrics providers
